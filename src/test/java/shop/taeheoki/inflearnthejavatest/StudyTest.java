@@ -1,12 +1,15 @@
 package shop.taeheoki.inflearnthejavatest;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.*;
 
 import java.time.Duration;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumingThat;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class StudyTest {
@@ -78,6 +81,58 @@ class StudyTest {
     @Test
     public void timeOutTest() throws Exception {
         assertTimeout(Duration.ofSeconds(10), () -> new Study(10));
+    }
+    
+    @Test
+    @DisplayName("조건에 따라 테스트 실행하기")
+    public void studyTest4() throws Exception {
+        String test_env = System.getenv("TEST_ENV");
+        System.out.println("test_env = " + test_env);
+        assumeTrue("LOCAL".equalsIgnoreCase(test_env));
+
+        Study actual = new Study(10);
+        assertThat(actual.getLimit()).isGreaterThan(0);
+    }
+
+    @Test
+    @DisplayName("조건에 따라 테스트 실행하기 - 2")
+    public void studyTest5() throws Exception {
+        String test_env = System.getenv("TEST_ENV");
+
+        assumingThat("LOCAL".equalsIgnoreCase(test_env), () -> {
+            System.out.println("local");
+            Study actual = new Study(100);
+            assertThat(actual.getLimit()).isGreaterThan(0);
+        });
+
+        assumingThat("taeheoki".equalsIgnoreCase(test_env), () -> {
+            System.out.println("taeheoki");
+            Study actual = new Study(10);
+            assertThat(actual.getLimit()).isGreaterThan(0);
+        });
+    }
+
+    @Test
+    @DisplayName("애너테이션을 이용하여 조건에 따라 테스트 실행하기")
+    @EnabledOnOs({OS.MAC, OS.LINUX})
+    @EnabledOnJre({JRE.JAVA_8, JRE.JAVA_11})
+    @EnabledIfEnvironmentVariable(named = "TEST_ENV", matches = "LOCAL")
+    public void studyTest6() throws Exception {
+        String test_env = System.getenv("TEST_ENV");
+        System.out.println("test_env = " + test_env);
+        Study actual = new Study(100);
+        assertThat(actual.getLimit()).isGreaterThan(0);
+    }
+
+    @Test
+    @DisplayName("애너테이션을 이용하여 조건에 따라 테스트 실행하지 않기")
+    @DisabledOnOs({OS.MAC})
+//    @EnabledIfEnvironmentVariable(named = "TEST_ENV", matches = "taeheoki")
+    public void studyTest7() throws Exception {
+        String test_env = System.getenv("TEST_ENV");
+        System.out.println("test_env = " + test_env);
+        Study actual = new Study(100);
+        assertThat(actual.getLimit()).isGreaterThan(0);
     }
 
     @BeforeAll
