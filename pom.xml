@@ -38,4 +38,37 @@
         </plugins>
     </build>
 
+<!-- 테스트 진행 시 fast-tag, slow-tag가 환경에 따라 각각 다른 환경에서 테스트되도록 설정 -->
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <groups>fast</groups>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>ci</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+<!--                        <configuration>-->
+<!--                            <groups>fast | slow</groups>-->
+<!--                        </configuration>-->
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
