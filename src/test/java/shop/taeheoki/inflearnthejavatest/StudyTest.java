@@ -135,17 +135,16 @@ class StudyTest {
         assertThat(actual.getLimit()).isGreaterThan(0);
     }
 
-    @Test
+    @FastTest
     @DisplayName("스터디 만들기 fast")
-    @Tag("fast")
+//    @Tag("fast") // 문자이기 때문에 Type Safety하지 않다.
     public void studyTest8() throws Exception {
         Study actual = new Study(100);
         assertThat(actual.getLimit()).isGreaterThan(0);
     }
 
-    @Test
+    @SlowTest
     @DisplayName("스터디 만들기 slow")
-    @Tag("slow") // 테스트가 오래 걸려 로컬에서 진행하기 부담스러운 케이스, CI 환경에서 실행하고 싶다.
     public void studyTest9() throws Exception {
         System.out.println("create1");
     }
